@@ -1,11 +1,11 @@
-const acorn = require('acorn');
-const jsx = require('acorn-jsx');
-const styleToObject = require('style-to-object');
-const htmlTagNames = require('html-tag-names');
-const svgTagNames = require('svg-tag-names');
-const isString = require('is-string');
+const acorn = require("acorn");
+const jsx = require("acorn-jsx");
+const styleToObject = require("style-to-object");
+const htmlTagNames = require("html-tag-names");
+const svgTagNames = require("svg-tag-names");
+const isString = require("is-string");
 
-const possibleStandardNames = require('./possible-standard-names');
+const possibleStandardNames = require("./possible-standard-names");
 
 const isHtmlOrSvgTag = (tag) =>
   htmlTagNames.includes(tag) || svgTagNames.includes(tag);
@@ -16,19 +16,19 @@ const getAttributeValue = (expression) => {
     return true;
   }
 
-  if (expression.type === 'Literal') {
+  if (expression.type === "Literal") {
     return expression.value;
   }
 
-  if (expression.type === 'JSXExpressionContainer') {
+  if (expression.type === "JSXExpressionContainer") {
     return getAttributeValue(expression.expression);
   }
 
-  if (expression.type === 'ArrayExpression') {
+  if (expression.type === "ArrayExpression") {
     return expression.elements.map((element) => getAttributeValue(element));
   }
 
-  if (expression.type === 'TemplateLiteral') {
+  if (expression.type === "TemplateLiteral") {
     const expressions = expression.expressions.map((element) => ({
       ...element,
       value: {
@@ -42,11 +42,11 @@ const getAttributeValue = (expression) => {
       .sort((elementA, elementB) => elementA.start - elementB.start)
       .reduce(
         (string, element) => `${string}${element.value.cooked.toString()}`,
-        '',
+        ""
       );
   }
 
-  if (expression.type === 'ObjectExpression') {
+  if (expression.type === "ObjectExpression") {
     const entries = expression.properties
       .map((property) => {
         const key = getAttributeValue(property.key);
@@ -66,130 +66,130 @@ const getAttributeValue = (expression) => {
     return entries;
   }
 
-  if (expression.type === 'Identifier') {
+  if (expression.type === "Identifier") {
     return expression.name;
   }
 
-  if (expression.type === 'BinaryExpression') {
+  if (expression.type === "BinaryExpression") {
     switch (expression.operator) {
-      case '+':
+      case "+":
         return (
           getAttributeValue(expression.left) +
           getAttributeValue(expression.right)
         );
-      case '-':
+      case "-":
         return (
           getAttributeValue(expression.left) -
           getAttributeValue(expression.right)
         );
-      case '*':
+      case "*":
         return (
           getAttributeValue(expression.left) *
           getAttributeValue(expression.right)
         );
-      case '**':
+      case "**":
         return (
           getAttributeValue(expression.left) **
           getAttributeValue(expression.right)
         );
-      case '/':
+      case "/":
         return (
           getAttributeValue(expression.left) /
           getAttributeValue(expression.right)
         );
-      case '%':
+      case "%":
         return (
           getAttributeValue(expression.left) %
           getAttributeValue(expression.right)
         );
-      case '==':
-        return (
-          getAttributeValue(expression.left) ==
-          getAttributeValue(expression.right)
-        );
-      case '===':
+      case "==":
         return (
           getAttributeValue(expression.left) ===
           getAttributeValue(expression.right)
         );
-      case '!=':
+      case "===":
         return (
-          getAttributeValue(expression.left) !=
+          getAttributeValue(expression.left) ===
           getAttributeValue(expression.right)
         );
-      case '!==':
+      case "!=":
         return (
           getAttributeValue(expression.left) !==
           getAttributeValue(expression.right)
         );
-      case '<':
+      case "!==":
+        return (
+          getAttributeValue(expression.left) !==
+          getAttributeValue(expression.right)
+        );
+      case "<":
         return (
           getAttributeValue(expression.left) <
           getAttributeValue(expression.right)
         );
-      case '<=':
+      case "<=":
         return (
           getAttributeValue(expression.left) <=
           getAttributeValue(expression.right)
         );
-      case '>':
+      case ">":
         return (
           getAttributeValue(expression.left) >
           getAttributeValue(expression.right)
         );
-      case '>=':
+      case ">=":
         return (
           getAttributeValue(expression.left) >=
           getAttributeValue(expression.right)
         );
-      case '<<':
+      case "<<":
         return (
           getAttributeValue(expression.left) <<
           getAttributeValue(expression.right)
         );
-      case '>>':
+      case ">>":
         return (
           getAttributeValue(expression.left) >>
           getAttributeValue(expression.right)
         );
-      case '>>>':
+      case ">>>":
         return (
           getAttributeValue(expression.left) >>>
           getAttributeValue(expression.right)
         );
-      case '|':
+      case "|":
         return (
           getAttributeValue(expression.left) |
           getAttributeValue(expression.right)
         );
-      case '&':
+      case "&":
         return (
           getAttributeValue(expression.left) &
           getAttributeValue(expression.right)
         );
-      case '^':
+      case "^":
         return (
           getAttributeValue(expression.left) ^
           getAttributeValue(expression.right)
         );
       default:
         throw new SyntaxError(
-          `BinaryExpression with "${expression.operator}" is not supported`,
+          `BinaryExpression with "${expression.operator}" is not supported`
         );
     }
   }
 
-  if (expression.type === 'UnaryExpression') {
+  if (expression.type === "UnaryExpression") {
     switch (expression.operator) {
-      case '+':
+      case "+":
         return +getAttributeValue(expression.argument);
-      case '-':
+      case "-":
         return -getAttributeValue(expression.argument);
-      case '~':
+      case "~":
         return ~getAttributeValue(expression.argument);
       default:
         throw new SyntaxError(
-          `UnaryExpression with "${expression.operator}" is not supported`,
+          `UnaryExpression with "${expression.operator}" is not supported`
         );
     }
   }
@@ -198,83 +198,93 @@ const getAttributeValue = (expression) => {
   throw new SyntaxError(`${expression.type} is not supported`);
 };
 
-const getNode = (node) => {
-  if (node.type === 'JSXFragment') {
-    return ['Fragment', null].concat(node.children.map(getNode));
-  }
+const jsxToJson = (input, props = null) => {
+  const getNode = (node) => {
+    if (node.type === "JSXFragment") {
+      return {
+        type: "Fragment",
+        props: {},
+        children: node.children.map(getNode),
+      };
+    }
 
-  if (node.type === 'JSXElement') {
-    return [
-      node.openingElement.name.name,
-      node.openingElement.attributes
-        .map((attribute) => {
-          if (attribute.type === 'JSXAttribute') {
-            let attributeName = attribute.name.name;
+    if (node.type === "JSXElement") {
+      return {
+        type: node.openingElement.name.name,
+        props: node.openingElement.attributes
+          .map((attribute) => {
+            if (attribute.type === "JSXAttribute") {
+              let attributeName = attribute.name.name;
 
-            if (isHtmlOrSvgTag(node.openingElement.name.name.toLowerCase())) {
-              if (possibleStandardNames[attributeName.toLowerCase()]) {
-                attributeName =
-                  possibleStandardNames[attributeName.toLowerCase()];
+              if (isHtmlOrSvgTag(node.openingElement.name.name.toLowerCase())) {
+                if (possibleStandardNames[attributeName.toLowerCase()]) {
+                  attributeName =
+                    possibleStandardNames[attributeName.toLowerCase()];
+                }
+              }
+              let attributeValue = getAttributeValue(attribute.value, props);
+
+              if (attributeValue !== undefined) {
+                if (attributeName === "style" && isString(attributeValue)) {
+                  attributeValue = styleToObject(attributeValue);
+                }
+
+                if (props && attributeValue in props) {
+                  attributeValue = props[attributeValue];
+                }
+
+                return {
+                  name: attributeName,
+                  value: attributeValue,
+                };
               }
             }
 
-            let attributeValue = getAttributeValue(attribute.value);
+            return null;
+          })
+          .filter((property) => property)
+          .reduce((properties, property) => {
+            return { ...properties, [property.name]: property.value };
+          }, {}),
+        children: node.children.map(getNode),
+      };
+    }
 
-            if (attributeValue !== undefined) {
-              if (attributeName === 'style' && isString(attributeValue)) {
-                attributeValue = styleToObject(attributeValue);
-              }
+    if (node.type === "JSXText") {
+      return {
+        type: "Fragment",
+        props: {},
+        children: node.value,
+      };
+    }
 
-              return {
-                name: attributeName,
-                value: attributeValue,
-              };
-            }
-          }
+    // Unsupported type
+    throw new SyntaxError(`${node.type} is not supported`);
+  };
 
-          return null;
-        })
-        .filter((property) => property)
-        .reduce((properties, property) => {
-          return { ...properties, [property.name]: property.value };
-        }, {}),
-    ].concat(node.children.map(getNode));
+  if (typeof input !== "string") {
+    throw new TypeError("Expected a string");
   }
-
-  if (node.type === 'JSXText') {
-    return node.value;
-  }
-
-  // Unsupported type
-  throw new SyntaxError(`${node.type} is not supported`);
-};
-
-const jsxToJson = (input) => {
-  if (typeof input !== 'string') {
-    throw new TypeError('Expected a string');
-  }
-
   let parsed = null;
   try {
-    parsed = acorn.Parser.extend(jsx({ allowNamespaces: false })).parse(
-      `<root>${input}</root>`,
-    );
+    parsed = acorn.Parser.extend(jsx({ allowNamespaces: false })).parse(input, {
+      ecmaVersion: 2020,
+    });
   } catch (e) {
     throw new SyntaxError(
       JSON.stringify({
         location: e.loc,
         validationError: `Could not parse "${input}"`,
-      }),
+      })
     );
   }
 
   if (parsed.body[0]) {
-    return parsed.body[0].expression.children
-      .map(getNode)
-      .filter((child) => child);
+    const rootNode = parsed.body[0].expression;
+    return getNode(rootNode);
   }
 
-  return [];
+  return {};
 };
 
 module.exports = jsxToJson;

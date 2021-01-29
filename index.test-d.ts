@@ -1,4 +1,4 @@
-import { expectType } from 'tsd';
-import jsxToJson, { JsxCreateElementNode } from '.';
+import { expectType } from "tsd";
+import jsxToJson, { JsxCreateElementNode } from ".";
 
-expectType<JsxCreateElementNode[]>(jsxToJson('foo bar'));
+expectType<JsxCreateElementNode>(jsxToJson("foo bar"));

@@ -1,7 +1,14 @@
 export type JsxCreateElementNode =
-  | [string, { [key: string]: any }, ...JsxCreateElementNode[]]
+  | {
+      type: string;
+      props: { [key: string]: any };
+      children: JsxCreateElementNode[];
+    }
   | string;
 
-declare function jsxToJson(input: string): JsxCreateElementNode[];
+declare function jsxToJson(
+  input: string,
+  props?: { [key: string]: any }
+): JsxCreateElementNode;
 
 export default jsxToJson;
