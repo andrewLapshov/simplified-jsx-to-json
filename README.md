@@ -1,6 +1,6 @@
-# simplified-jsx-to-json/ast-props
+# simplified-jsx-to-ast
 
-[![Build Status](https://travis-ci.org/gglnx/simplified-jsx-to-json.svg?branch=master)](https://travis-ci.org/gglnx/simplified-jsx-to-json) [![npm version](https://img.shields.io/npm/v/simplified-jsx-to-json)](https://www.npmjs.com/package/simplified-jsx-to-json) ![npm downloads](https://img.shields.io/npm/dm/simplified-jsx-to-json)
+![npm](https://img.shields.io/npm/v/simplified-jsx-to-ast)
 
 > Mod of original `simplified-jsx-to-json` package.
 > Converts simplified JSX code into a JSON AST representation, which can be used by `React.createElement`
@@ -9,7 +9,7 @@
 ## Install
 
 ```
-$ npm install simplified-jsx-to-json/ast-props
+$ npm install simplified-jsx-to-ast
 ```
 
 ## Usage

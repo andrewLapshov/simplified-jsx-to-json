@@ -1,6 +1,6 @@
 {
-  "name": "simplified-jsx-to-json",
-  "version": "0.2.0",
+  "name": "simplified-jsx-to-ast",
+  "version": "0.4.0",
   "description": "Converts basic JSX code into a JSON representation, which can be used by React.createElement",
   "keywords": [
     "jsx",
@@ -11,9 +11,9 @@
     "ast"
   ],
   "main": "index.js",
-  "repository": "https://github.com/gglnx/simplified-jsx-to-json",
+  "repository": "https://github.com/andrewLapshov/simplified-jsx-to-json/tree/ast-props",
   "author": {
-    "name": "Dennis Morhardt",
+    "name": "Dennis Morhardt & Andrey Lapshov",
     "email": "info@dennismorhardt.de",
     "url": "https://dennismorhardt.de"
   },
