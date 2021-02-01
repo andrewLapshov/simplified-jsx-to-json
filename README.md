@@ -1,13 +1,15 @@
-# simplified-jsx-to-json
+# simplified-jsx-to-json/ast-props
 
 [![Build Status](https://travis-ci.org/gglnx/simplified-jsx-to-json.svg?branch=master)](https://travis-ci.org/gglnx/simplified-jsx-to-json) [![npm version](https://img.shields.io/npm/v/simplified-jsx-to-json)](https://www.npmjs.com/package/simplified-jsx-to-json) ![npm downloads](https://img.shields.io/npm/dm/simplified-jsx-to-json)
 
-> Converts simplified JSX code into a JSON representation, which can be used by `React.createElement`
+> Mod of original `simplified-jsx-to-json` package.
+> Converts simplified JSX code into a JSON AST representation, which can be used by `React.createElement`
+> Supports props values from object argument.
 
 ## Install
 
 ```
-$ npm install simplified-jsx-to-json
+$ npm install simplified-jsx-to-json/ast-props
 ```
 
 ## Usage
@@ -16,7 +18,17 @@ $ npm install simplified-jsx-to-json
 const jsxToJson = require('simplified-jsx-to-json');
 
 jsxToJson('<Test myProp={true}>My Child</Test>');
-//=> '[ [ 'Test', { myProp: true }, "My Child" ] ]'
+//=> {
+//     type: "Test",
+//     props: { myProp: true },
+//     children: [
+//       {
+//         type: "Fragment",
+//         props: {},
+//         children: "Test",
+//       },
+//     ],
+//   }
 ```
 
 ## Features
@@ -36,3 +48,5 @@ jsxToJson('<Test myProp={true}>My Child</Test>');
 ## License
 
 MIT © [Dennis Morhardt](https://dennismorhardt.de)
+
+Modified by Andrey Lapshov
